@@ -39,9 +39,13 @@
         <input
           type="search"
           id="search-box"
-          class="form-control"
+          class="form-control dropdown-toggle"
           placeholder="Charizard"
+          data-bs-toggle="dropdown"
+          autocomplete="off"
         />
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdown"></ul>
+
       </div>
       <div class="col-auto">
         <button type="submit" class="btn btn-primary mb-3">Search</button>

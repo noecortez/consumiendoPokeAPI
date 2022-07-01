@@ -26,6 +26,33 @@ btnNext.addEventListener('click', () => {
   btnPrevius.className = 'page-item';
 });
 
+searchBox.addEventListener('input', async ({target}) => {
+  let pokemonSuggestion = target.value;
+  let autoCompleteValues = [];
+
+  if (pokemonSuggestion) {
+    const response = await fetch(urlPokemons + '/pokemon/?limit=1000');
+    const data = await response.json();
+
+    autoCompleteValues = data.results.filter(({name}) => {
+      const lowerCasePokemon = name.toLowerCase();
+      const lowerCaseSuggestion = pokemonSuggestion.toLowerCase();
+
+      return lowerCasePokemon.includes(lowerCaseSuggestion);
+    });
+
+    document.querySelector('.dropdown-menu').innerHTML = `
+      ${autoCompleteValues.map(result => {
+        return (
+          `<li class="dropdown-item" onClick="selectPokemon('${result.name}')">${result.name}</li>`
+        );
+      }).join('')}
+    `;
+  } else {
+    document.querySelector('.dropdown-menu').innerHTML = 'Escribe un pokemon';
+  }
+});
+
 formSearch.addEventListener('submit', async (event) => {
   event.preventDefault();
 
@@ -47,6 +74,10 @@ formSearch.addEventListener('submit', async (event) => {
 
   searchBox.value = '';
 });
+
+function selectPokemon(name) {
+  searchBox.value = name;
+}
 
 async function fetchPokemons(offset, limit) {
   for (let index = offset; index <= offset + limit; index++) {
@@ -242,6 +273,5 @@ function createAlert(message, color) {
     document.getElementById('alertContainer').innerHTML = '';
   }, 4000);
 }
-
 
 fetchPokemons(offset, limit);
